@@ -41,18 +41,22 @@ router.post("/", async (req, res) => {
   try {
     const newProduct = await Product.create(req.body);
 
-    res.status(200).json(newProduct);
-  } catch (error) {
-    res.status(400).json(error);
-  }
-  /* req.body should look like this...
-    {
-      product_name: "Basketball",
-      price: 200.00,
-      stock: 3,
-      tagIds: [1, 2, 3, 4]
+    if (req.body.tagIds && req.body.tagIds.length) {
+      const productTagIdArr = req.body.tagIds.map((tag_id) => ({
+        product_id: newProduct.id,
+        tag_id,
+      }));
+      await ProductTag.bulkCreate(productTagIdArr);
     }
-  */
+
+    const productWithTags = await Product.findByPk(newProduct.id, {
+      include: [{ model: Tag }],
+    });
+
+    res.status(200).json(productWithTags || newProduct);
+  } catch (err) {
+    res.status(400).json(err);
+  }
 
   Product.create(req.body)
     .then((product) => {
