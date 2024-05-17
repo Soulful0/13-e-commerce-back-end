@@ -41,11 +41,14 @@ router.post("/", async (req, res) => {
   try {
     const newProduct = await Product.create(req.body);
 
+    // gets the length of tagIds
     if (req.body.tagIds && req.body.tagIds.length) {
+      // Uses the length and maps the tag_ids to each product with tag_id and product_id
       const productTagIdArr = req.body.tagIds.map((tag_id) => ({
         product_id: newProduct.id,
         tag_id,
       }));
+      // Bulk creates all tags and products ids to products.
       await ProductTag.bulkCreate(productTagIdArr);
     }
 
