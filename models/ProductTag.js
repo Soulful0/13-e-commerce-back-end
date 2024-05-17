@@ -8,7 +8,7 @@ ProductTag.init(
   {
     // define columns
     product_id: {
-      type: Datatype.INTEGER,
+      type: DataTypes.INTEGER,
       references: {
         model: "category",
         key: "id",
