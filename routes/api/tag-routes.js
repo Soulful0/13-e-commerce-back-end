@@ -51,7 +51,7 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   // update a tag's name by its `id` value
   try {
-    const [updated] = await Tag.update(req.body, {
+    const updated = await Tag.update(req.body, {
       where: {
         id: req.params.id,
       },
@@ -59,6 +59,7 @@ router.put("/:id", async (req, res) => {
     if (updated) {
       // Check if row was updated for tag
       const tagData = await Tag.findByPk(req.params.id);
+      res.status(200).json(tagData);
     } else {
       res.status(404).json({ message: "No tag was found with that id" });
       return;
